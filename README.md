@@ -1,2 +1,2 @@
 # Back
-Repositorio sobre el lenguaje front y su despliegue
+Repositorio sobre el lenguaje back y su despliegue

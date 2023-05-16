@@ -1,0 +1,30 @@
+# Dependencias
+/node_modules
+
+#Archivo generado al instalar el proyecto
+package-lock.json
+
+# Archivos generados por el sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de registro
+*.log
+
+# Caché de npm
+/.npm
+
+# Archivos compilados
+/dist
+/build
+
+# Archivos de configuración local
+.env
+
+# Dependencias específicas del IDE/editor
+/.idea
+.vscode
+
+# Archivos de respaldo
+*~
+*.bak

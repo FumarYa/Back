@@ -2,14 +2,16 @@
 import express from 'express';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
 
 //Declaro variable app para usar todos los métodos de express
 const app = express();
 const __dirname= dirname(fileURLToPath(import.meta.url));
 
-const port = 3000;
-
+//Configurar las variables de entorno
+dotenv.config({path:join(__dirname,'./env/.env')})
 
 //Inicio del servidor y conexión a un puerto
+const port=process.env.PORT;
 app.listen(port);
 console.log("El servidor está escuchando en el puerto:",port);

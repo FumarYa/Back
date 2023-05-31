@@ -28,7 +28,7 @@ async function connection() {
 
   export async function getProducto(id_producto){
     try {
-      const result = await pool.query("SELECT * FROM producto WHERE id = " + id_producto + "");
+      const result = await pool.query("SELECT * FROM producto WHERE Id = " + id_producto + ";");
       const producto = result[0].map(row => ({
         id: row.Id,
         nombre:row.Nombre,
@@ -44,4 +44,9 @@ async function connection() {
       throw new Error("Unable to retrieve productos");
     }
   }
-  connection();
+
+  try {
+    connection();
+  } catch (error) {
+    console.error(`Error al ejecutar la función connection: ${error.stack}`);
+  }

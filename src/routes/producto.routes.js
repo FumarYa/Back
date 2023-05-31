@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { listaproducto } from "../controllers/indexRoutes.js";
+import { listaproducto, producto_nombre } from "../controllers/indexRoutes.js";
 
 const router = Router();
 
@@ -7,6 +7,7 @@ const router = Router();
 router.get('/all',listaproducto);
 
 //Mostrar producto por nombre
+router.get('/:nombre',producto_nombre);
 
 //Mostrar producto por marca 
 

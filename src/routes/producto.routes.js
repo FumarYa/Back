@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { listaproducto, producto_nombre, marca_nombre } from "../controllers/indexRoutes.js";
+import { listaproducto, producto_nombre, marca_nombre, tipo_nombre } from "../controllers/indexRoutes.js";
 
 const router = Router();
 
@@ -13,6 +13,7 @@ router.get('/:nombre',producto_nombre);
 router.get('/:marca',marca_nombre); 
 
 //Mostrar producto por tipo
+router.get('/:tipo',tipo_nombre); 
 
 //Mostrar producto por rango de precio 
 

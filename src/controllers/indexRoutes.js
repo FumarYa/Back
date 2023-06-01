@@ -91,3 +91,24 @@ export const tipo_nombre = (req, res) => {
       console.error("Error executing the query: " + err.stack); //Se muestra un mensaje de error si no se pudo ejecutar la consulta correctamente
     });
 }
+
+//Saca todos los datos de los productos por rango de precio.
+export const rango_precio = (req, res) => {
+  pool.query("SELECT * FROM producto WHERE precio <= '" + req.params.rango + "'")
+    .then(rows => { //Se mapea el resultado obtenido para seleccionar solo los campos que se quieren mostrar en la respuesta
+      const array = rows[0].map(row => ({
+        //Se asignan los valores de cada columna con las variables de la izquierda 
+        id: row.Id,
+        nombre:row.Nombre,
+        marca: row.Marca,
+        descripcion: row.Descripcion,
+        precio: row.Precio,
+        tipo: row.Tipo,
+        imagen: row.Imagen
+      }));
+      res.json(array); //Se devuelve la respuesta en formato JSON con la información del producto encontrado
+    })
+    .catch(err => {
+      console.error("Error executing the query: " + err.stack); //Se muestra un mensaje de error si no se pudo ejecutar la consulta correctamente
+    });
+}

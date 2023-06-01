@@ -1,8 +1,10 @@
 import { Router } from "express";
+import { listausuarios } from "../controllers/indexRoutes.js";
 
 const router = Router();
 
 //Mostrar todos los usuarios
+router.get("/all", listausuarios) 
 
 //Mostrar cada usuario por nombre
 

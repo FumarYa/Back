@@ -3,6 +3,7 @@ import express from 'express';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import productorouter from './routes/producto.routes.js';
+import usuariosrouter from './routes/usuarios.routes.js';
 import dotenv from 'dotenv';
 
 //Declaro variable app para usar todos los métodos de express
@@ -14,6 +15,7 @@ dotenv.config({path:join(__dirname,'./env/.env')})
 
 
 app.use('/api/producto', productorouter);
+app.use('/api/usuarios', usuariosrouter);
 
 
 //Inicio del servidor y conexión a un puerto

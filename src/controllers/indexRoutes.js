@@ -1,4 +1,4 @@
-import { pool, getProducto } from '../db/db.js'
+import {pool} from '../db/db.js'
 
 //////////////////////// Filtrados de Producto ////////////////////////
 
@@ -132,4 +132,30 @@ export const producto_id = (req, res) => {
     .catch(err => {
       console.error("Error executing the query: " + err.stack); //Se muestra un mensaje de error si no se pudo ejecutar la consulta correctamente
     });
+}
+
+//////////////////////// Filtrados de Usuarios ////////////////////////
+//Saca todos los usuarios con todos sus datos correspondientes
+export const listausuarios = async (req, res) => {
+  try {
+    const listausuarios = await pool.query(
+      "SELECT * from usuarios"
+    );
+    const array = listausuarios[0].map(async row => {
+      return {
+        id: row.Id,
+        nombre:row.Nombre,
+        contrasena: row.Contrasena,
+        telefono: row.Telefono,
+        correo: row.Correo,
+        fechanacimiento: row.FechaNacimiento,
+        rol: row.rol
+      };
+    });
+
+    const resolvedArray = await Promise.all(array);
+    res.json(resolvedArray);
+  } catch (err) {
+    console.error("Error executing the query: " + err.stack);
+  }
 }

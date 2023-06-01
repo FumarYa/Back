@@ -25,26 +25,6 @@ async function connection() {
       console.error(`Error al conectarse a la base de datos: ${error.stack}`);
     }
   }
-
-  export async function getProducto(id_producto){
-    try {
-      const result = await pool.query("SELECT * FROM producto WHERE Id = " + id_producto + ";");
-      const producto = result[0].map(row => ({
-        id: row.Id,
-        nombre:row.Nombre,
-        marca: row.Marca,
-        descripcion: row.Descripcion,
-        precio: row.Precio,
-        tipo: row.Tipo,
-        imagen: row.Imagen
-      }));
-      return producto;
-    } catch (err) {
-      console.error("Error executing the query: " + err.stack);
-      throw new Error("Unable to retrieve productos");
-    }
-  }
-
   try {
     connection();
   } catch (error) {

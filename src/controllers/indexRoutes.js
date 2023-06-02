@@ -236,7 +236,6 @@ export const usuario_id = (req, res) => { //Se realiza una consulta a la base de
 //Borra un usuario por su id.
 export const usuario_delete = (req, res) => { 
   const map = new Map();
-  map.set('Id', req.params.id); // Obtén el ID desde los parámetros de la solicitud
 
   selectFrom('usuarios', map) // Llama a la función "selectFrom" que devuelve un booleano con el resultado de la consulta SQL(true / false)
     .then(resultado => {

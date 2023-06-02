@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { listausuarios, usuario_nombre, usuario_id, usuario_add } from "../controllers/indexRoutes.js";
+import { listausuarios, usuario_nombre, usuario_id, usuario_add, usuario_delete } from "../controllers/indexRoutes.js";
 
 const router = Router();
 
@@ -20,6 +20,7 @@ router.post("/add", usuario_add)
 //Actualiza usuario por id
 
 //Borra un usuario por id
+router.delete("/delete", usuario_delete)
 
 //Cambia contraseña usuario
 

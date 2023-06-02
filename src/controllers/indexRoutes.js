@@ -233,6 +233,32 @@ export const usuario_id = (req, res) => { //Se realiza una consulta a la base de
     });
 }
 
+//Borra un usuario por su id.
+export const usuario_delete = (req, res) => { 
+  const map = new Map();
+  map.set('Id', req.params.id); // Obtén el ID desde los parámetros de la solicitud
+
+  selectFrom('usuarios', map) // Llama a la función "selectFrom" que devuelve un booleano con el resultado de la consulta SQL(true / false)
+    .then(resultado => {
+      if (resultado) { // Verifica la devolución del metodo
+        // Ejecuta una consulta SQL DELETE para eliminar un usuario de la base de datos
+        pool.execute("DELETE FROM usuarios WHERE Id = " +req.params.id)
+          .then(rows => {
+            res.json("Usuario borrado correctamente"); // Envía una respuesta JSON con un mensaje de éxito si la consulta DELETE se ejecuta correctamente
+          })
+          .catch(err => {
+            console.error("Error executing the query: " + err.stack); // Si hay un error en la consulta DELETE, registra el error en la consola
+          });
+      } else {
+        res.json("No existe un usuario con ese ID"); // Envía una respuesta JSON si no hay usuario con el ID proporcionado
+      }
+    })
+    .catch(error => {
+      console.error(error); // Si hay un error en la consulta SELECT, registra el error en la consola
+    });
+}
+
+
 
 // Función que permite realizar una consulta SELECT dinámicamente
 function selectFrom(tabla, map) { 

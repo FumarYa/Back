@@ -160,10 +160,32 @@ export const listausuarios = async (req, res) => {
   }
 }
 
-//Saca el producto por nombre
+//Saca el usuario por nombre
 export const usuario_nombre = (req, res) => { //Se realiza una consulta a la base de datos para obtener los datos del producto cuyo nombre coincide con el valor pasado en el parámetro "nombre"
   //Se utiliza el objeto "pool" para ejecutar la consulta
   pool.query("SELECT * FROM usuarios WHERE Nombre = '" + req.params.nombre + "'") //Se ejecuta la consulta y se concatenan los valores de los parámetros para formar la cadena de consulta SQL
+    .then(rows => { //Se mapea el resultado obtenido para seleccionar solo los campos que se quieren mostrar en la respuesta
+      const array = rows[0].map(row => ({
+        //Se asignan los valores de cada columna con las variables de la izquierda 
+        id: row.Id,
+        nombre:row.Nombre,
+        contrasena: row.Contrasena,
+        telefono: row.Telefono,
+        correo: row.Correo,
+        fechanacimiento: row.FechaNacimiento,
+        rol: row.rol
+      }));
+      res.json(array); //Se devuelve la respuesta en formato JSON con la información del producto encontrado
+    })
+    .catch(err => {
+      console.error("Error executing the query: " + err.stack); //Se muestra un mensaje de error si no se pudo ejecutar la consulta correctamente
+    });
+}
+
+//Saca el ususario por id
+export const usuario_id = (req, res) => { //Se realiza una consulta a la base de datos para obtener los datos del producto cuyo nombre coincide con el valor pasado en el parámetro "nombre"
+  //Se utiliza el objeto "pool" para ejecutar la consulta
+  pool.query("SELECT * FROM usuarios WHERE Id = '" + req.params.id + "'") //Se ejecuta la consulta y se concatenan los valores de los parámetros para formar la cadena de consulta SQL
     .then(rows => { //Se mapea el resultado obtenido para seleccionar solo los campos que se quieren mostrar en la respuesta
       const array = rows[0].map(row => ({
         //Se asignan los valores de cada columna con las variables de la izquierda 

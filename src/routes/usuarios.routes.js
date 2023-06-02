@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { listausuarios, usuario_nombre, usuario_id, usuario_add, usuario_delete } from "../controllers/indexRoutes.js";
+import { listausuarios, usuario_nombre, usuario_id, usuario_add, usuario_delete, usuario_update } from "../controllers/indexRoutes.js";
 
 const router = Router();
 
@@ -18,10 +18,12 @@ router.get("/id/:id", usuario_id)
 router.post("/add", usuario_add) 
 
 //Actualiza usuario por id
+router.put("/update/:id", usuario_update)
 
 //Borra un usuario por id
 router.delete("/delete/:id", usuario_delete)
 
 //Cambia contraseña usuario
+
 
 export default router

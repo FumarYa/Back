@@ -182,6 +182,35 @@ export const usuario_nombre = (req, res) => { //Se realiza una consulta a la bas
     });
 }
 
+//Añade un nuevo Usuario
+export const usuario_add = (req, res) => { 
+  const map = new Map();
+  for (let property in req.body) { // Itera a través de las propiedades del cuerpo de la solicitud y agrega la propiedad 'email' al mapa
+    if (property === 'email') {
+      map.set(property, req.body[property]);
+    };
+  }
+
+  selectFrom('usuarios', map) // Llama a la función "selectFrom" que devuelve un booleano con el resultado de la consulta SQL(true / false)
+    .then(resultado => {
+      if (resultado) { // Verifica la devolución del metodo
+        // Ejecuta una consulta SQL INSERT para agregar un nuevo usuario a la base de datos
+        pool.execute("INSERT INTO usuarios (Nombre, Contrasena, Telefono, Correo, FechaNacimiento, Rol) VALUES ('" + req.body.nombre + "','" + req.body.contrasena + "','" + req.body.telefono + "','" + req.body.correo + "','"+ req.body.fechanacimiento+ "','"+req.body.rol+ "')")
+          .then(rows => {
+            res.json("Usuario añadido correctamente"); // Envía una respuesta JSON con un mensaje de éxito si la consulta INSERT se ejecuta correctamente
+          })
+          .catch(err => {
+            console.error("Error executing the query: " + err.stack); // Si hay un error en la consulta INSERT, registra el error en la consola
+          });
+      } else {
+        res.json("Ya existe un usuario con ese email"); // Envía una respuesta JSON con un mensaje de error si ya existe un usuario con la dirección de correo electrónico proporcionada
+      }
+    })
+    .catch(error => {
+      console.error(error); // Si hay un error en la consulta SELECT, registra el error en la consola
+    });
+}
+
 //Saca el ususario por id
 export const usuario_id = (req, res) => { //Se realiza una consulta a la base de datos para obtener los datos del producto cuyo nombre coincide con el valor pasado en el parámetro "nombre"
   //Se utiliza el objeto "pool" para ejecutar la consulta

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { listausuarios, usuario_nombre, usuario_id } from "../controllers/indexRoutes.js";
+import { listausuarios, usuario_nombre, usuario_id, usuario_add } from "../controllers/indexRoutes.js";
 
 const router = Router();
 
@@ -15,6 +15,7 @@ router.get("/id/:id", usuario_id)
 //Comprueba usuario y contraseña correcto
 
 //Añade nuevo usuario
+router.post("/add", usuario_add) 
 
 //Actualiza usuario por id
 

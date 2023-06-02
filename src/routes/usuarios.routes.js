@@ -20,7 +20,7 @@ router.post("/add", usuario_add)
 //Actualiza usuario por id
 
 //Borra un usuario por id
-router.delete("/delete", usuario_delete)
+router.delete("/delete/:id", usuario_delete)
 
 //Cambia contraseña usuario
 

@@ -282,6 +282,36 @@ export const usuario_update = (req, res) => {
     });
 }
 
+//Metodo para ver si el usuario y contraseña es correcto
+export const usuario_login = (req, res) => {
+  //Si nos viene el email comprobamos que no exista
+  if (req.body.correo && req.body.contrasena) {
+    const map = new Map(); // Crear un nuevo objeto Map vacío
+    for (let property in req.body) { // Recorrer las propiedades del cuerpo de la solicitud
+      if (property === 'correo') { // Si la propiedad es 'correo'
+        map.set(property, req.body[property]); // Almacenar el valor de la propiedad en el objeto Map
+      }
+      if (property === 'contrasena') { // Si la propiedad es 'contrasena'
+        map.set(property, req.body[property]); // Almacenar el valor de la propiedad en el objeto Map
+      }
+    }
+
+    selectFrom('usuarios', map) // Verificar si las credenciales están bien
+      .then(resultado => {
+        if (!resultado) { // Si son correctas las credenciales
+          res.json(`El Usuario con su contraseña es correcta`); // Enviar una respuesta de éxito al usuario
+        } else {
+          res.json("El Usuario con su contraseña NO es correcta"); // Enviar una respuesta de error al usuario
+        }
+      })
+      .catch(error => {
+        console.error(error); // Imprimir en la consola el error ocurrido al ejecutar la consulta
+      });
+  } else {
+    res.json(`Introduce en los Headers los parámetros email y contraseña`); // Enviar una respuesta de éxito al usuario
+  }
+};
+
 // Función que permite realizar una consulta SELECT dinámicamente
 function selectFrom(tabla, map) { 
     var query = "SELECT * FROM " + tabla + " WHERE ";

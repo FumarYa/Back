@@ -203,3 +203,28 @@ export const usuario_id = (req, res) => { //Se realiza una consulta a la base de
       console.error("Error executing the query: " + err.stack); //Se muestra un mensaje de error si no se pudo ejecutar la consulta correctamente
     });
 }
+
+
+// Función que permite realizar una consulta SELECT dinámicamente
+function selectFrom(tabla, map) { 
+    var query = "SELECT * FROM " + tabla + " WHERE ";
+    var index = map.size; 
+    map.forEach(function (value, key) {
+      query += key + " = " + "'" + value + "' "
+      if (index > 1) {
+        query += 'AND '
+      };
+      index--;
+    });
+    return pool.query(query)
+      .then(rows => {
+        if (rows[0][0] == null) {
+          return true;
+        } else {
+          return false;
+        }
+      })
+      .catch(err => {
+        console.error("Error executing the query: " + err.stack);
+      });
+}

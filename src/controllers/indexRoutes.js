@@ -312,6 +312,31 @@ export const usuario_login = (req, res) => {
   }
 };
 
+// Actualiza una contraseña por su id.
+export const contrasena_update = (req, res) => { 
+  const map = new Map();
+  map.set('Id', req.params.id);
+
+  selectFrom('usuarios', map)
+    .then(resultado => {
+      if (resultado) {
+        // Ejecuta una consulta SQL UPDATE para actualizar una contrasena en la base de datos
+        pool.execute("UPDATE usuarios SET Contrasena = ? WHERE Id = ?",[req.body.contrasena, req.params.id])
+          .then(rows => {
+            res.json("Usuario actualizado correctamente"); 
+          })
+          .catch(err => {
+            console.error("Error executing the query: " + err.stack);
+          });
+      } else {
+        res.json("No existe un usuario con ese ID"); // Envía una respuesta JSON si no hay usuario con el ID proporcionado
+      }
+    })
+    .catch(error => {
+      console.error(error); 
+    });
+}
+
 // Función que permite realizar una consulta SELECT dinámicamente
 function selectFrom(tabla, map) { 
     var query = "SELECT * FROM " + tabla + " WHERE ";

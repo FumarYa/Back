@@ -337,6 +337,182 @@ export const contrasena_update = (req, res) => {
     });
 }
 
+//////////////////////// Filtrados de Ventas ////////////////////////
+//Saca todos las productos con todos sus datos correspondientes
+export const listaventas = async (req, res) => {
+  try {
+    const listaventas = await pool.query(
+      "SELECT * from ventas"
+    );
+
+    const array = listaventas[0].map(async row => {
+      return {
+        id: row.Id,
+        idusuario: row.Idusuario,
+        direccion: row.Direccion,
+        municipio: row.Municipio,
+        codigopostal: row.Codigopostal,
+        fecha: row.Fecha,
+        estado: row.Estado,
+        total: row.Total
+      };
+    });
+
+    const resolvedArray = await Promise.all(array);
+    res.json(resolvedArray);
+  } catch (err) {
+    console.error("Error executing the query: " + err.stack);
+  }
+}
+
+//Sacas las ventas de un usuario filtrado por el nombre.
+export const ventas_usuario = async (req, res) => {
+  try {
+    const nombreusuario = req.params.nombre;  // Asume que el nombre de usuario viene en los parámetros de la solicitud
+    const ventas_usuario = await pool.query(
+      "SELECT ventas.* FROM ventas INNER JOIN usuarios ON ventas.IdUsuario = usuarios.Id WHERE usuarios.Nombre = ?", [nombreusuario]
+    );
+
+    const array = ventas_usuario[0].map(async row => {
+      return {
+        id: row.Id,
+        idusuario: row.IdUsuario,
+        direccion: row.Direccion,
+        municipio: row.Municipio,
+        codigopostal: row.CodigoPostal,
+        fecha: row.Fecha,
+        estado: row.Estado,
+        total: row.Total
+      };
+    });
+
+    const resolvedArray = await Promise.all(array);
+    res.json(resolvedArray);
+  } catch (err) {
+    console.error("Error executing the query: " + err.stack);
+  }
+}
+
+//Sacas las ventas de un usuario filtrado por el id.
+export const ventas_id = async (req, res) => {
+  try {
+      // Asume que el nombre de usuario viene en los parámetros de la solicitud
+    const ventas_id = await pool.query(
+      "SELECT * FROM ventas WHERE IdUsuario ="+req.params.id);
+
+    const array = ventas_id[0].map(async row => {
+      return {
+        id: row.Id,
+        idusuario: row.IdUsuario,
+        direccion: row.Direccion,
+        municipio: row.Municipio,
+        codigopostal: row.CodigoPostal,
+        fecha: row.Fecha,
+        estado: row.Estado,
+        total: row.Total
+      };
+    });
+    const resolvedArray = await Promise.all(array);
+    res.json(resolvedArray);
+  } catch (err) {
+    console.error("Error executing the query: " + err.stack);
+  }
+}
+
+//Saca las ventas de un mismo dia.
+export const ventas_dia = async (req, res) => {
+  try {
+    let dia = req.params.dia;  // Asume que la fecha viene en los parámetros de la solicitud en el formato 'DD/MM/AAAA'
+    dia = dia.split("-").reverse().join("-");   // Convierte la fecha al formato 'AAAA-MM-DD'
+    const ventas_dia = await pool.query(
+      "SELECT * FROM ventas WHERE DATE(Fecha) = ?", [dia]
+    );
+
+    const array = ventas_dia[0].map(async row => {
+      return {
+        id: row.Id,
+        idusuario: row.IdUsuario,
+        direccion: row.Direccion,
+        municipio: row.Municipio,
+        codigopostal: row.CodigoPostal,
+        fecha: row.Fecha,
+        estado: row.Estado,
+        total: row.Total
+      };
+    });
+
+    const resolvedArray = await Promise.all(array);
+    res.json(resolvedArray);
+  } catch (err) {
+    console.error("Error executing the query: " + err.stack);
+  }
+}
+
+//Añadir una nueva venta hecha por un usuario.
+export const venta_add = async (req, res) => {
+  try {
+    const { idUsuario, direccion, municipio, codigoPostal, fecha, estado, total } = req.body;
+    
+    const fechaFormat = fecha.split("-").reverse().join("-");
+
+    const newVenta = await pool.query(
+      "INSERT INTO ventas (IdUsuario, Direccion, Municipio, CodigoPostal, Fecha, Estado, Total) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      [idUsuario, direccion, municipio, codigoPostal, fechaFormat, estado, total]
+    );
+
+    res.json({
+      message: 'Venta añadida',
+      body: {
+        venta: {idUsuario, direccion, municipio, codigoPostal, fecha, estado, total}
+      }
+    });
+  } catch (err) {
+    console.error("Error executing the query: " + err.stack);
+  }
+}
+
+//Actualiza el estado de una venta para cuando haga la compra.
+export const venta_update = async (req, res) => {
+  const { id } = req.params;
+  const { estado } = req.body;
+
+  try {
+    const result = await pool.query(
+      "UPDATE ventas SET Estado = ? WHERE Id = ?", 
+      [estado, id]
+    );
+
+    if (result.affectedRows > 0) {
+      res.status(200).json({ message: `Venta con id ${id} ha sido actualizada correctamente.` });
+    } else {
+      res.status(404).json({ message: `Venta con id ${id} no se encontró.` });
+    }
+  } catch (err) {
+    console.error("Error executing the query: " + err.stack);
+    res.status(500).json({ message: "Error al actualizar la venta." });
+  }
+};
+
+export const venta_delete = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await pool.query(
+      "DELETE FROM ventas WHERE Id = ?", 
+      [id]
+    );
+
+    if (result.affectedRows > 0) {
+      res.status(200).json({ message: `Venta con id ${id} ha sido eliminada correctamente.` });
+    } else {
+      res.status(404).json({ message: `Venta con id ${id} no se encontró.` });
+    }
+  } catch (err) {
+    console.error("Error executing the query: " + err.stack);
+    res.status(500).json({ message: "Error al eliminar la venta." });
+  }
+};
+
 // Función que permite realizar una consulta SELECT dinámicamente
 function selectFrom(tabla, map) { 
     var query = "SELECT * FROM " + tabla + " WHERE ";

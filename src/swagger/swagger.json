@@ -535,8 +535,7 @@
               "description": "El id del producto",
               "required": true,
               "schema": {
-                "type": "integer",
-                "format": "int64"
+                "type": "integer"
               }
             },
             {
@@ -605,19 +604,28 @@
           }
         }
       },
-      "/api/music/all": {
-        "get": {
-          "tags": ["Pieces"],
-          "summary": "Esta llamada devuelve todas las piezas de Contemporanica",
-          "description": "Esta llamada solo necesita que le pasemos el token como parámetro",
+      "/api/producto/delete/{id}": {
+        "delete": {
+          "tags": ["Productos"],
+          "summary": "Esta llamada borra un producto de FumarYa",
+          "description": "Esta llamada solo necesita que le pasemos el token y el id como parámetros",
           "security": [{
             "ApiKeyAuth": []  
           }],  
           "parameters": [
             {
+              "name": "id",
+              "in": "path",
+              "description": "El id del producto",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            },
+            {
               "name": "token",
               "in": "header",
-              "description": "El token de la API",
+              "description": "El token de autenticación de la API",
               "required": true,
               "schema": {
                 "type": "string"
@@ -625,7 +633,7 @@
             }
           ],
           "responses": {
-            "201": {
+            "200": {
               "description": "Success",
               "content": {
                 "application/json": {
@@ -637,24 +645,15 @@
           }
         }
       },
-      "/api/music/name/{name}": {
+      "/api/usuarios/all": {
         "get": {
-          "tags": ["Pieces"],
-          "summary": "Esta llamada devuelve una pieza musical filtrada por su nombre",
-          "description": "Esta llamada necesita que le pasemos como parámetro el nombre de la pieza musical y el token.",
+          "tags": ["Usuarios"],
+          "summary": "Esta llamada devuelve todos los usuarios de FumarYa",
+          "description": "Esta llamada solo necesita que le pasemos el token como parámetro",
           "security": [{
             "ApiKeyAuth": []  
           }],  
           "parameters": [
-            {
-              "name": "name",
-              "in": "path",
-              "description": "El nombre de la pieza musical",
-              "required": true,
-              "schema": {
-                "type": "string"
-              }
-            },
             {
               "name": "token",
               "in": "header",
@@ -670,35 +669,18 @@
               "description": "Success",
               "content": {
                 "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "nombre": {
-                        "type": "string"
-                      }
-                    }
-                  },
-                  "examples": {
-                    "Ejemplo 1": {
-                      "nombre": "El Mozardazo"
-                    }
-                  }
                 }
               }
             },
-            "404": {
-              "description": "Not found"
-            },
-            "500": {
-              "description": "Internal server error"
-            }
+            "404": { "description": "Not found" },
+            "500": { "description": "Internal server error" }
           }
         }
       },
-      "/api/music/family/all": {
+      "/api/ventas/all": {
         "get": {
-          "tags": ["Families"],
-          "summary": "Esta llamada devuelve todas las familias de Contemporanica",
+          "tags": ["Ventas"],
+          "summary": "Esta llamada devuelve todas las ventas de FumarYa",
           "description": "Esta llamada solo necesita que le pasemos el token como parámetro",
           "security": [{
             "ApiKeyAuth": []  
@@ -715,7 +697,7 @@
             }
           ],
           "responses": {
-            "201": {
+            "200": {
               "description": "Success",
               "content": {
                 "application/json": {

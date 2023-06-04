@@ -139,7 +139,7 @@ export const producto_add = (req, res) => {
 
   selectFrom('producto', map)
     .then(resultado => {
-      if (resultado) { 
+      if (!resultado) { 
         pool.execute(`INSERT INTO producto (Nombre, Marca, Descripcion, Precio, Tipo, Imagen) VALUES ('${req.body.nombre}', '${req.body.marca}', '${req.body.descripcion}', ${req.body.precio}, '${req.body.tipo}', '${req.body.imagen}')`)
           .then(rows => {
             res.json("Producto añadido correctamente"); 
@@ -182,28 +182,41 @@ export const producto_delete = (req, res) => {
 }
 
 // Actualiza el precio de un producto por su id.
-export const producto_update = (req, res) => { 
+export const producto_update = async (req, res) => { 
   const map = new Map();
-  map.set('Id', req.params.id); // Añade el Id del producto a verificar al mapa
+  const id = Number(req.params.id);
 
-  selectFrom('producto', map) // Llama a la función "selectFrom" que verifica si el producto existe
-    .then(resultado => {
-      if (resultado) { // Verifica la devolución del metodo
-        // Ejecuta una consulta SQL UPDATE para actualizar el precio de un producto en la base de datos
-        pool.execute(`UPDATE productos SET Nombre = '${req.body.nombre}', Marca = '${req.body.marca}', Descripcion = '${req.body.descripcion}', Precio = ${req.body.precio}, Tipo = '${req.body.tipo}', Imagen = '${req.body.imagen}' WHERE Id = ${req.params.id}`)
-          .then(rows => {
-            res.json("Precio del producto actualizado correctamente"); // Envía una respuesta JSON con un mensaje de éxito si la consulta UPDATE se ejecuta correctamente
-          })
-          .catch(err => {
-            console.error("Error executing the query: " + err.stack); // Si hay un error en la consulta UPDATE, registra el error en la consola
-          });
-      } else {
-        res.json("No existe un producto con ese ID"); // Envía una respuesta JSON si no hay producto con el ID proporcionado
+  // Verifica si el Id es un número válido
+  if (isNaN(id)) {
+    return res.json("El Id proporcionado no es un número válido");
+  }
+
+  map.set('Id', id);
+
+  try {
+    const productoExiste = await selectFrom('producto', map)
+
+    if (!productoExiste) {
+      return res.json("No existe un producto con ese ID");
+    }
+
+    // Verifica que todos los campos requeridos estén presentes
+    const camposRequeridos = ['nombre', 'marca', 'descripcion', 'precio', 'tipo', 'imagen'];
+    for (const campo of camposRequeridos) {
+      if (!(campo in req.body)) {
+        return res.json(`Falta el campo ${campo} en la petición`);
       }
-    })
-    .catch(error => {
-      console.error(error); // Si hay un error en la consulta SELECT, registra el error en la consola
-    });
+    }
+
+    await pool.execute(`UPDATE producto SET Nombre = ?, Marca = ?, Descripcion = ?, Precio = ?, Tipo = ?, Imagen = ? WHERE Id = ?`, 
+    [req.body.nombre, req.body.marca, req.body.descripcion, req.body.precio, req.body.tipo, req.body.imagen, id])
+
+    res.json("Producto actualizado correctamente");
+
+  } catch (error) {
+    console.error("Error executing the query: " + error.stack);
+    res.status(500).json("Error interno del servidor.");
+  }
 }
 
 //////////////////////// Filtrados de Usuarios ////////////////////////
@@ -594,11 +607,11 @@ function selectFrom(tabla, map) {
     });
     return pool.query(query)
       .then(rows => {
-        if (rows[0][0] == null) {
-          return true;
-        } else {
+        if (rows[0][0] == null) {// Si la consulta no encontró resultados, se retorna false
           return false;
-        }
+        } else {// Si la consulta encontró resultados, se retorna true
+          return true;
+      }
       })
       .catch(err => {
         console.error("Error executing the query: " + err.stack);

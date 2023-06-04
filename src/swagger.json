@@ -1,0 +1,74 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+      "title": "REST API for Contemporanica API Documentation",
+      "version": "1.0.0"
+    },
+    "schemes": ["http"],
+    "servers": [{ "url": "http://localhost:3000/" }],
+    "paths": {
+      "/api/producto/all": {
+        "get": {
+          "tags": ["Productos"],
+          "summary": "Esta llamada devuelve todos los productos de FurmarYa",
+          "description": "Esta llamada no necesita que le pasemos ningún parámetro, devuelve todos los productos de FumarYa",
+          "requestBody": {
+            "required": false
+          },
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                }
+              }
+            },
+            "404": { "description": "Not found" },
+            "500": { "description": "Internal server error" }
+          }
+        }
+      },
+      "/api/usuarios/all": {
+        "get": {
+          "tags": ["Usuarios"],
+          "summary": "Esta llamada devuelve todos los usuarios de FumarYa",
+          "description": "Esta llamada no necesita que le pasemos ningún parámetro, devuelve todos los usuarios de FumarYa",
+          "requestBody": {
+            "required": false
+          },
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                }
+              }
+            },
+            "404": { "description": "Not found" },
+            "500": { "description": "Internal server error" }
+          }
+        }
+      },
+      "/api/ventas/all": {
+        "get": {
+          "tags": ["Ventas"],
+          "summary": "Esta llamada devuelve todas las ventas de FumarYa",
+          "description": "Esta llamada no necesita que le pasemos ningún parámetro, devuelve todas las ventas de FumarYa",
+          "requestBody": {
+            "required": false
+          },
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                }
+              }
+            },
+            "404": { "description": "Not found" },
+            "500": { "description": "Internal server error" }
+          }
+        }
+      }
+    }
+  }

@@ -11,7 +11,6 @@ export const listaproducto = async (req, res) => {
 
     const array = listaproducto[0].map(async row => {
       return {
-        id: row.Id,
         nombre:row.Nombre,
         marca: row.Marca,
         descripcion: row.Descripcion,
@@ -35,7 +34,6 @@ export const producto_nombre = (req, res) => { //Se realiza una consulta a la ba
     .then(rows => { //Se mapea el resultado obtenido para seleccionar solo los campos que se quieren mostrar en la respuesta
       const array = rows[0].map(row => ({
         //Se asignan los valores de cada columna con las variables de la izquierda 
-        id: row.Id,
         nombre:row.Nombre,
         marca: row.Marca,
         descripcion: row.Descripcion,
@@ -56,7 +54,6 @@ export const marca_nombre = (req, res) => {
     .then(rows => { //Se mapea el resultado obtenido para seleccionar solo los campos que se quieren mostrar en la respuesta
       const array = rows[0].map(row => ({
         //Se asignan los valores de cada columna con las variables de la izquierda 
-        id: row.Id,
         nombre:row.Nombre,
         marca: row.Marca,
         descripcion: row.Descripcion,
@@ -77,7 +74,6 @@ export const tipo_nombre = (req, res) => {
     .then(rows => { //Se mapea el resultado obtenido para seleccionar solo los campos que se quieren mostrar en la respuesta
       const array = rows[0].map(row => ({
         //Se asignan los valores de cada columna con las variables de la izquierda 
-        id: row.Id,
         nombre:row.Nombre,
         marca: row.Marca,
         descripcion: row.Descripcion,
@@ -98,7 +94,6 @@ export const rango_precio = (req, res) => {
     .then(rows => { //Se mapea el resultado obtenido para seleccionar solo los campos que se quieren mostrar en la respuesta
       const array = rows[0].map(row => ({
         //Se asignan los valores de cada columna con las variables de la izquierda 
-        id: row.Id,
         nombre:row.Nombre,
         marca: row.Marca,
         descripcion: row.Descripcion,
@@ -113,13 +108,12 @@ export const rango_precio = (req, res) => {
     });
 }
 
-//Saca el producto por nombre
+//Saca el producto por id
 export const producto_id = (req, res) => { 
   pool.query("SELECT * FROM producto WHERE Id = '" + req.params.id + "'") 
     .then(rows => { //Se mapea el resultado obtenido para seleccionar solo los campos que se quieren mostrar en la respuesta
       const array = rows[0].map(row => ({
         //Se asignan los valores de cada columna con las variables de la izquierda 
-        id: row.Id,
         nombre:row.Nombre,
         marca: row.Marca,
         descripcion: row.Descripcion,
@@ -131,6 +125,84 @@ export const producto_id = (req, res) => {
     })
     .catch(err => {
       console.error("Error executing the query: " + err.stack); //Se muestra un mensaje de error si no se pudo ejecutar la consulta correctamente
+    });
+}
+
+//Añade un nuevo Producto
+export const producto_add = (req, res) => { 
+  const map = new Map();
+  for (let property in req.body) {
+    if (property === 'nombre') { // Verifica si el producto ya existe basándose en su nombre
+      map.set(property, req.body[property]);
+    };
+  }
+
+  selectFrom('producto', map)
+    .then(resultado => {
+      if (resultado) { 
+        pool.execute(`INSERT INTO producto (Nombre, Marca, Descripcion, Precio, Tipo, Imagen) VALUES ('${req.body.nombre}', '${req.body.marca}', '${req.body.descripcion}', ${req.body.precio}, '${req.body.tipo}', '${req.body.imagen}')`)
+          .then(rows => {
+            res.json("Producto añadido correctamente"); 
+          })
+          .catch(err => {
+            console.error("Error executing the query: " + err.stack); 
+          });
+      } else {
+        res.json("Ya existe un producto con ese nombre"); 
+      }
+    })
+    .catch(error => {
+      console.error(error); 
+    });
+}
+
+//Borra un producto por su id.
+export const producto_delete = (req, res) => { 
+  const map = new Map();
+  map.set('Id', req.params.id); // Añade el Id del producto a verificar al mapa
+
+  selectFrom('producto', map) // Llama a la función "selectFrom" que verifica si el producto existe
+    .then(resultado => {
+      if (resultado) { // Verifica la devolución del metodo
+        // Ejecuta una consulta SQL DELETE para eliminar un producto de la base de datos
+        pool.execute("DELETE FROM producto WHERE Id = " +req.params.id)
+          .then(rows => {
+            res.json("Producto borrado correctamente"); // Envía una respuesta JSON con un mensaje de éxito si la consulta DELETE se ejecuta correctamente
+          })
+          .catch(err => {
+            console.error("Error executing the query: " + err.stack); // Si hay un error en la consulta DELETE, registra el error en la consola
+          });
+      } else {
+        res.json("No existe un producto con ese ID"); // Envía una respuesta JSON si no hay producto con el ID proporcionado
+      }
+    })
+    .catch(error => {
+      console.error(error); // Si hay un error en la consulta SELECT, registra el error en la consola
+    });
+}
+
+// Actualiza el precio de un producto por su id.
+export const producto_update = (req, res) => { 
+  const map = new Map();
+  map.set('Id', req.params.id); // Añade el Id del producto a verificar al mapa
+
+  selectFrom('producto', map) // Llama a la función "selectFrom" que verifica si el producto existe
+    .then(resultado => {
+      if (resultado) { // Verifica la devolución del metodo
+        // Ejecuta una consulta SQL UPDATE para actualizar el precio de un producto en la base de datos
+        pool.execute(`UPDATE productos SET Nombre = '${req.body.nombre}', Marca = '${req.body.marca}', Descripcion = '${req.body.descripcion}', Precio = ${req.body.precio}, Tipo = '${req.body.tipo}', Imagen = '${req.body.imagen}' WHERE Id = ${req.params.id}`)
+          .then(rows => {
+            res.json("Precio del producto actualizado correctamente"); // Envía una respuesta JSON con un mensaje de éxito si la consulta UPDATE se ejecuta correctamente
+          })
+          .catch(err => {
+            console.error("Error executing the query: " + err.stack); // Si hay un error en la consulta UPDATE, registra el error en la consola
+          });
+      } else {
+        res.json("No existe un producto con ese ID"); // Envía una respuesta JSON si no hay producto con el ID proporcionado
+      }
+    })
+    .catch(error => {
+      console.error(error); // Si hay un error en la consulta SELECT, registra el error en la consola
     });
 }
 
@@ -347,7 +419,6 @@ export const listaventas = async (req, res) => {
 
     const array = listaventas[0].map(async row => {
       return {
-        id: row.Id,
         idusuario: row.Idusuario,
         direccion: row.Direccion,
         municipio: row.Municipio,
@@ -375,7 +446,6 @@ export const ventas_usuario = async (req, res) => {
 
     const array = ventas_usuario[0].map(async row => {
       return {
-        id: row.Id,
         idusuario: row.IdUsuario,
         direccion: row.Direccion,
         municipio: row.Municipio,
@@ -402,7 +472,6 @@ export const ventas_id = async (req, res) => {
 
     const array = ventas_id[0].map(async row => {
       return {
-        id: row.Id,
         idusuario: row.IdUsuario,
         direccion: row.Direccion,
         municipio: row.Municipio,
@@ -430,7 +499,6 @@ export const ventas_dia = async (req, res) => {
 
     const array = ventas_dia[0].map(async row => {
       return {
-        id: row.Id,
         idusuario: row.IdUsuario,
         direccion: row.Direccion,
         municipio: row.Municipio,

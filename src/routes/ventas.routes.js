@@ -1,5 +1,7 @@
-import { Router } from "express";
+import pkg from "express";
 import { listaventas, ventas_usuario, ventas_id, ventas_dia, venta_add, venta_update, venta_delete } from "../controllers/indexRoutes.js";
+
+const { Router } = pkg;
 
 const router = Router();
 

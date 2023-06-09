@@ -11,6 +11,7 @@ export const listaproducto = async (req, res) => {
 
     const array = listaproducto[0].map(async row => {
       return {
+        id: row.Id,
         nombre:row.Nombre,
         marca: row.Marca,
         descripcion: row.Descripcion,
@@ -529,22 +530,32 @@ export const ventas_dia = async (req, res) => {
   }
 }
 
-//Añadir una nueva venta hecha por un usuario.
 export const venta_add = async (req, res) => {
   try {
-    const { idUsuario, direccion, municipio, codigoPostal, fecha, estado, total } = req.body;
+    const { idUsuario, direccion, municipio, codigoPostal, fecha, estado, total, productos } = req.body;
     
     const fechaFormat = fecha.split("-").reverse().join("-");
 
-    const newVenta = await pool.query(
+    const ventaResult = await pool.query(
       "INSERT INTO ventas (IdUsuario, Direccion, Municipio, CodigoPostal, Fecha, Estado, Total) VALUES (?, ?, ?, ?, ?, ?, ?)",
       [idUsuario, direccion, municipio, codigoPostal, fechaFormat, estado, total]
     );
 
+    const idVenta = ventaResult.insertId; // Obtiene el ID de la venta que acabas de insertar.
+
+    // Para cada producto en el array de productos, inserta un nuevo registro en la tabla detalleventa.
+    for (const producto of productos) {
+      await pool.query(
+        "INSERT INTO detalleventa (IdVenta, IdProducto, Cantidad, PrecioUnitario) VALUES (?, ?, ?, ?)",
+        [idVenta, producto.idProducto, producto.cantidad, producto.precioUnitario]
+      );
+    }
+
     res.json({
       message: 'Venta añadida',
       body: {
-        venta: {idUsuario, direccion, municipio, codigoPostal, fecha, estado, total}
+        venta: {idUsuario, direccion, municipio, codigoPostal, fecha, estado, total},
+        productos
       }
     });
   } catch (err) {

@@ -1,0 +1,893 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+      "title": "API REST FumarYa para documentacion",
+      "version": "1.0.0"
+    },
+    "schemes": ["http"],
+    "servers": [{ "url": "http://localhost:4000/" }],
+    "paths": {
+      "/api/producto/all": {
+        "get": {
+          "tags": ["Productos"],
+          "summary": "Esta llamada devuelve todos los productos de FumarYa",
+          "description": "Esta llamada solo necesita que le pasemos el token como parámetro",
+          "security": [{
+            "ApiKeyAuth": []  
+          }],  
+          "parameters": [
+            {
+              "name": "token",
+              "in": "header",
+              "description": "El token de la API",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                }
+              }
+            },
+            "404": { "description": "Not found" },
+            "500": { "description": "Internal server error" }
+          }
+        }
+      },
+      "components": {
+        "securitySchemes": {
+          "ApiKeyAuth": {
+            "type": "apiKey",
+            "in": "header",
+            "Authorization":"a944114ba4149684eb4e6b00e6093fbd"
+          }
+        }
+      },
+      "/api/producto/nombre/{nombre}": {
+        "get": {
+          "tags": ["Productos"],
+          "summary": "Esta llamada devuelve un producto musical filtrado por su nombre",
+          "description": "Esta llamada necesita que le pasemos como parámetro el nombre del producto y el token.",
+          "security": [{
+            "ApiKeyAuth": []  
+          }],  
+          "parameters": [
+            {
+              "name": "nombre",
+              "in": "path",
+              "description": "El nombre del producto",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "description": "El token de la API",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "nombre": {
+                        "type": "string"
+                      },
+                      "marca": {
+                        "type": "string"
+                      },
+                      "descripcion": {
+                        "type": "string"
+                      },
+                      "precio": {
+                        "type": "number"
+                      },
+                      "tipo": {
+                        "type": "string"
+                      },
+                      "imagen": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "examples": {
+                    "Ejemplo 1": [
+                      {
+                        "nombre": "Tabaco Ducal 20",
+                        "marca": "Ducal",
+                        "descripcion": "Es un paquete de tabaco industrial de 20 cigarros",
+                        "precio": "6.00",
+                        "tipo": "Tabaco Industrial",
+                        "imagen": "Imagen1.jpg"
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Not found"
+            },
+            "500": {
+              "description": "Internal server error"
+            }
+          }
+        }
+      },
+      "/api/producto/marca/{marca}": {
+        "get": {
+          "tags": ["Productos"],
+          "summary": "Esta llamada devuelve los productos de FumarYa filtrado por su marca",
+          "description": "Esta llamada necesita que le pasemos como parámetro la marca del producto y el token.",
+          "security": [{
+            "ApiKeyAuth": []  
+          }],  
+          "parameters": [
+            {
+              "name": "marca",
+              "in": "path",
+              "description": "La marca del producto",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "description": "El token de la API",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "nombre": {
+                        "type": "string"
+                      },
+                      "marca": {
+                        "type": "string"
+                      },
+                      "descripcion": {
+                        "type": "string"
+                      },
+                      "precio": {
+                        "type": "number"
+                      },
+                      "tipo": {
+                        "type": "string"
+                      },
+                      "imagen": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "examples": {
+                    "Ejemplo 1": {
+                      "nombre": "Tabaco Ducal 20",
+                      "marca": "Ducal",
+                      "descripcion": "Es un paquete de tabaco industrial de 20 cigarros",
+                      "precio": "6.00",
+                      "tipo": "Tabaco Industrial",
+                      "imagen": "Imagen1.jpg"
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Not found"
+            },
+            "500": {
+              "description": "Internal server error"
+            }
+          }
+        }
+      },  
+      "/api/producto/tipo/{tipo}": {
+        "get": {
+          "tags": ["Productos"],
+          "summary": "Esta llamada devuelve los productos de FumarYa filtrado por su tipo",
+          "description": "Esta llamada necesita que le pasemos como parámetro el tipo de producto y el token.",
+          "security": [{
+            "ApiKeyAuth": []  
+          }],  
+          "parameters": [
+            {
+              "name": "tipo",
+              "in": "path",
+              "description": "El tipo de producto",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "description": "El token de la API",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "nombre": {
+                        "type": "string"
+                      },
+                      "marca": {
+                        "type": "string"
+                      },
+                      "descripcion": {
+                        "type": "string"
+                      },
+                      "precio": {
+                        "type": "number"
+                      },
+                      "tipo": {
+                        "type": "string"
+                      },
+                      "imagen": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "examples": {
+                    "Ejemplo 1": {
+                      "nombre": "Tabaco Ducal 20",
+                      "marca": "Ducal",
+                      "descripcion": "Es un paquete de tabaco industrial de 20 cigarros",
+                      "precio": "6.00",
+                      "tipo": "Tabaco Industrial",
+                      "imagen": "Imagen1.jpg"
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Not found"
+            },
+            "500": {
+              "description": "Internal server error"
+            }
+          }
+        }
+      },
+      "/api/producto/rango/{rango}": {
+        "get": {
+          "tags": ["Productos"],
+          "summary": "Esta llamada devuelve los productos de FumarYa filtrado por un rango de precio entre 0 y X incluido.",
+          "description": "Esta llamada necesita que le pasemos como parámetro el precio mayor y el token.",
+          "security": [{
+            "ApiKeyAuth": []  
+          }],  
+          "parameters": [
+            {
+              "name": "rango",
+              "in": "path",
+              "description": "El precio mayor del producto",
+              "required": true,
+              "schema": {
+                "type": "number",
+                "format": "double"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "description": "El token de la API",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "nombre": {
+                        "type": "string"
+                      },
+                      "marca": {
+                        "type": "string"
+                      },
+                      "descripcion": {
+                        "type": "string"
+                      },
+                      "precio": {
+                        "type": "number"
+                      },
+                      "tipo": {
+                        "type": "string"
+                      },
+                      "imagen": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "examples": {
+                    "Ejemplo 1": {
+                      "nombre": "Tabaco Ducal 20",
+                      "marca": "Ducal",
+                      "descripcion": "Es un paquete de tabaco industrial de 20 cigarros",
+                      "precio": "6.00",
+                      "tipo": "Tabaco Industrial",
+                      "imagen": "Imagen1.jpg"
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Not found"
+            },
+            "500": {
+              "description": "Internal server error"
+            }
+          }
+        }
+      },
+      "/api/producto/id/{id}": {
+        "get": {
+          "tags": ["Productos"],
+          "summary": "Esta llamada devuelve un producto musical filtrado por su id",
+          "description": "Esta llamada necesita que le pasemos como parámetro el id del producto y el token.",
+          "security": [{
+            "ApiKeyAuth": []  
+          }],  
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "El id del producto",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "description": "El token de la API",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "nombre": {
+                        "type": "string"
+                      },
+                      "marca": {
+                        "type": "string"
+                      },
+                      "descripcion": {
+                        "type": "string"
+                      },
+                      "precio": {
+                        "type": "number"
+                      },
+                      "tipo": {
+                        "type": "string"
+                      },
+                      "imagen": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "examples": {
+                    "Ejemplo 1": [
+                      {
+                        "nombre": "Tabaco Ducal 20",
+                        "marca": "Ducal",
+                        "descripcion": "Es un paquete de tabaco industrial de 20 cigarros",
+                        "precio": "6.00",
+                        "tipo": "Tabaco Industrial",
+                        "imagen": "Imagen1.jpg"
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Not found"
+            },
+            "500": {
+              "description": "Internal server error"
+            }
+          }
+        }
+      },
+      "/api/producto/add": {
+        "post": {
+          "tags": ["Productos"],
+          "summary": "Añade un producto a FumarYa",
+          "description": "Esta llamada añade un producto de FumarYa. Se necesita proporcionar el nombre, marca, descripcion, precio, tipo, e imagen.",
+          "security": [{
+            "ApiKeyAuth": []  
+          }],  
+          "parameters": [
+            {
+              "name": "token",
+              "in": "header",
+              "description": "El token de la API",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "description": "En el body le pasamos todos los campos que queremos actualizar junto a su nuevo valor, solo se actualizarán los valores que enviemos.",
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "nombre": {
+                      "type": "string"
+                    },
+                    "marca": {
+                      "type": "string"
+                    },
+                    "descripcion": {
+                      "type": "string"
+                    },
+                    "precio": {
+                      "type": "number"
+                    },
+                    "tipo": {
+                      "type": "string"
+                    },
+                    "imagen": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "OK: Se ha añadido el producto correctamente.",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  },
+                  "examples": {
+                    "example1": {
+                      "value": "OK: Se ha añadido el producto correctamente."
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Not found"
+            },
+            "500": {
+              "description": "Internal server error"
+            }
+          }        
+        }
+      },
+      "/api/producto/update/{id}": {
+        "put": {
+          "tags": ["Productos"],
+          "summary": "Actualiza un producto de FumarYa por su ID",
+          "description": "Esta llamada actualiza un producto de FumarYa por su ID. Se necesita proporcionar el ID del producto, un token de autenticación y los nuevos valores del nombre, marca, descripcion, precio, tipo, e imagen en el cuerpo de la petición.",
+          "security": [
+            {
+              "ApiKeyAuth": []
+            }
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "El id del producto",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "description": "El token de autenticación de la API",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "description": "En el body le pasamos todos los campos que queremos actualizar junto a su nuevo valor, solo se actualizarán los valores que enviemos.",
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "nombre": {
+                      "type": "string"
+                    },
+                    "marca": {
+                      "type": "string"
+                    },
+                    "descripcion": {
+                      "type": "string"
+                    },
+                    "precio": {
+                      "type": "number"
+                    },
+                    "tipo": {
+                      "type": "string"
+                    },
+                    "imagen": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "OK: Se ha actualizado el producto correctamente.",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  },
+                  "examples": {
+                    "example1": {
+                      "value": "OK: Se ha actualizado el producto correctamente."
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "No se ha encontrado el compositor."
+            },
+            "500": {
+              "description": "Error interno del servidor."
+            }
+          }
+        }
+      },
+      "/api/producto/delete/{id}": {
+        "delete": {
+          "tags": ["Productos"],
+          "summary": "Esta llamada borra un producto de FumarYa",
+          "description": "Esta llamada solo necesita que le pasemos el token y el id como parámetros",
+          "security": [{
+            "ApiKeyAuth": []  
+          }],  
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "El id del producto",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "description": "El token de autenticación de la API",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                }
+              }
+            },
+            "404": { "description": "Not found" },
+            "500": { "description": "Internal server error" }
+          }
+        }
+      },
+      "/api/usuarios/all": {
+        "get": {
+          "tags": ["Usuarios"],
+          "summary": "Esta llamada devuelve todos los usuarios de FumarYa",
+          "description": "Esta llamada solo necesita que le pasemos el token como parámetro",
+          "security": [{
+            "ApiKeyAuth": []  
+          }],  
+          "parameters": [
+            {
+              "name": "token",
+              "in": "header",
+              "description": "El token de la API",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                }
+              }
+            },
+            "404": { "description": "Not found" },
+            "500": { "description": "Internal server error" }
+          }
+        }
+      },
+      "/api/usuarios/login": {
+        "post": {
+          "tags": ["Usuarios"],
+          "summary": "Comprueba un usuario de FumarYa",
+          "description": "Esta llamada comprueba que el usuario y contraseña sean correctos.",
+          "security": [{
+            "ApiKeyAuth": []  
+          }],  
+          "parameters": [
+            {
+              "name": "token",
+              "in": "header",
+              "description": "El token de la API",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "description": "En el body le pasamos nombre y contraseña que es lo que queremos comprobar.",
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "nombre": {
+                      "type": "string"
+                    },
+                    "contrasena": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "OK: Es correcto el usuario y contraseña.",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  },
+                  "examples": {
+                    "example1": {
+                      "value": "OK:  Es correcto el usuario y contraseña."
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Not found"
+            },
+            "500": {
+              "description": "Internal server error"
+            }
+          }        
+        }
+      },
+      "/api/ventas/all": {
+        "get": {
+          "tags": ["Ventas"],
+          "summary": "Esta llamada devuelve todas las ventas de FumarYa",
+          "description": "Esta llamada solo necesita que le pasemos el token como parámetro",
+          "security": [{
+            "ApiKeyAuth": []  
+          }],  
+          "parameters": [
+            {
+              "name": "token",
+              "in": "header",
+              "description": "El token de la API",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                }
+              }
+            },
+            "404": { "description": "Not found" },
+            "500": { "description": "Internal server error" }
+          }
+        }
+      },
+      "/api/music/family/name/{family}": {
+        "get": {
+          "tags": ["Families"],
+          "summary": "Esta llamada devuelve un instrumento de Contemporánica filtrado por su familia",
+          "description": "Esta llamada necesita que le pasemos como parámetro la familia del instrumento y el token.",
+          "security": [{
+            "ApiKeyAuth": []  
+          }],  
+          "parameters": [
+            {
+              "name": "family",
+              "in": "path",
+              "description": "La familia del instrumento",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "description": "El token de la API",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "nombre": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "examples": {
+                    "Ejemplo 1": {
+                      "nombre": "Percusión"
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Not found"
+            },
+            "500": {
+              "description": "Internal server error"
+            }
+          }
+        }
+      },
+      "/api/music/family/id/{id}": {
+        "get": {
+          "tags": ["Families"],
+          "summary": "Esta llamada devuelve un instrumento de Contemporánica filtrado por su id",
+          "description": "Esta llamada necesita que le pasemos como parámetro el id del instrumento y el token.",
+          "security": [{
+            "ApiKeyAuth": []  
+          }],  
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "La familia del instrumento",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int64"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "description": "El token de la API",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "nombre": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "examples": {
+                    "Ejemplo 1": {
+                      "nombre": "Percusión"
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Not found"
+            },
+            "500": {
+              "description": "Internal server error"
+            }
+          }
+        }
+      }    
+    }
+  }

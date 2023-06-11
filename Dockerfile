@@ -1,4 +1,4 @@
-FROM node:19-alpine3.15
+FROM node:12.19.0-alpine3.15
 RUN mkdir -p /usr/src/app/src
 WORKDIR /usr/src/app
 # copying all the files from your file system to container file system

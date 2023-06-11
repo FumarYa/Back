@@ -677,6 +677,69 @@
           }
         }
       },
+      "/api/usuarios/login": {
+        "post": {
+          "tags": ["Usuarios"],
+          "summary": "Comprueba un usuario de FumarYa",
+          "description": "Esta llamada comprueba que el usuario y contraseña sean correctos.",
+          "security": [{
+            "ApiKeyAuth": []  
+          }],  
+          "parameters": [
+            {
+              "name": "token",
+              "in": "header",
+              "description": "El token de la API",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "description": "En el body le pasamos nombre y contraseña que es lo que queremos comprobar.",
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "nombre": {
+                      "type": "string"
+                    },
+                    "contrasena": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "OK: Es correcto el usuario y contraseña.",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  },
+                  "examples": {
+                    "example1": {
+                      "value": "OK:  Es correcto el usuario y contraseña."
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Not found"
+            },
+            "500": {
+              "description": "Internal server error"
+            }
+          }        
+        }
+      },
       "/api/ventas/all": {
         "get": {
           "tags": ["Ventas"],

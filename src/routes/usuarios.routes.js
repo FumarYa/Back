@@ -15,7 +15,7 @@ router.get("/nombre/:nombre", usuario_nombre)
 router.get("/id/:id", usuario_id) 
 
 //Comprueba usuario y contraseña correcto
-router.get('/login', usuario_login);
+router.post('/login', usuario_login);
 
 //Añade nuevo usuario
 router.post("/add", usuario_add) 

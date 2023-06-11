@@ -35,6 +35,7 @@ export const producto_nombre = (req, res) => { //Se realiza una consulta a la ba
     .then(rows => { //Se mapea el resultado obtenido para seleccionar solo los campos que se quieren mostrar en la respuesta
       const array = rows[0].map(row => ({
         //Se asignan los valores de cada columna con las variables de la izquierda 
+        id:row.Id,
         nombre:row.Nombre,
         marca: row.Marca,
         descripcion: row.Descripcion,
@@ -235,7 +236,7 @@ export const listausuarios = async (req, res) => {
         telefono: row.Telefono,
         correo: row.Correo,
         fechanacimiento: row.FechaNacimiento,
-        rol: row.rol
+        rol: row.Rol
       };
     });
 
@@ -268,20 +269,32 @@ export const usuario_nombre = (req, res) => { //Se realiza una consulta a la bas
     });
 }
 
-//Añade un nuevo Usuario
 export const usuario_add = (req, res) => { 
   const map = new Map();
-  for (let property in req.body) { // Itera a través de las propiedades del cuerpo de la solicitud y agrega la propiedad 'email' al mapa
-    if (property === 'email') {
+  for (let property in req.body) { // Itera a través de las propiedades del cuerpo de la solicitud y agrega la propiedad 'nombre' al mapa
+    if (property === 'nombre') {
       map.set(property, req.body[property]);
     };
   }
 
+  
+
   selectFrom('usuarios', map) // Llama a la función "selectFrom" que devuelve un booleano con el resultado de la consulta SQL(true / false)
     .then(resultado => {
-      if (resultado) { // Verifica la devolución del metodo
+      if (!resultado) { // Verifica la devolución del metodo
         // Ejecuta una consulta SQL INSERT para agregar un nuevo usuario a la base de datos
-        pool.execute("INSERT INTO usuarios (Nombre, Contrasena, Telefono, Correo, FechaNacimiento, Rol) VALUES ('" + req.body.nombre + "','" + req.body.contrasena + "','" + req.body.telefono + "','" + req.body.correo + "','"+ req.body.fechanacimiento+ "','"+req.body.rol+ "')")
+        const fechaNacimiento = req.body.fechaNacimiento; // 'YYYY-MM-DD'
+
+        // Convertir la cadena de fecha en partes
+        const partes = fechaNacimiento.split("-");
+
+        // Crear un nuevo objeto de fecha a partir de las partes
+        // Nota: los meses en JavaScript son de 0 a 11, así que restamos 1 al mes
+        const fecha = new Date(partes[0], partes[1] - 1, partes[2]);
+          pool.execute(`
+          INSERT INTO usuarios (Nombre, Contrasena, Telefono, Correo, FechaNacimiento, Rol) 
+          VALUES (?, ?, ?, ?, ?, ?)
+          `, [req.body.nombre, req.body.contrasena, req.body.telefono, req.body.correo, fecha, req.body.rol])
           .then(rows => {
             res.json("Usuario añadido correctamente"); // Envía una respuesta JSON con un mensaje de éxito si la consulta INSERT se ejecuta correctamente
           })
@@ -289,7 +302,7 @@ export const usuario_add = (req, res) => {
             console.error("Error executing the query: " + err.stack); // Si hay un error en la consulta INSERT, registra el error en la consola
           });
       } else {
-        res.json("Ya existe un usuario con ese email"); // Envía una respuesta JSON con un mensaje de error si ya existe un usuario con la dirección de correo electrónico proporcionada
+        res.json("Ya existe un usuario con ese nombre"); // Envía una respuesta JSON con un mensaje de error si ya existe un usuario con el nombre proporcionado
       }
     })
     .catch(error => {
@@ -371,10 +384,10 @@ export const usuario_update = (req, res) => {
 //Metodo para ver si el usuario y contraseña es correcto
 export const usuario_login = (req, res) => {
   //Si nos viene el email comprobamos que no exista
-  if (req.body.correo && req.body.contrasena) {
+  if (req.body.nombre && req.body.contrasena) {
     const map = new Map(); // Crear un nuevo objeto Map vacío
     for (let property in req.body) { // Recorrer las propiedades del cuerpo de la solicitud
-      if (property === 'correo') { // Si la propiedad es 'correo'
+      if (property === 'nombre') { // Si la propiedad es 'nombre'
         map.set(property, req.body[property]); // Almacenar el valor de la propiedad en el objeto Map
       }
       if (property === 'contrasena') { // Si la propiedad es 'contrasena'
@@ -384,8 +397,8 @@ export const usuario_login = (req, res) => {
 
     selectFrom('usuarios', map) // Verificar si las credenciales están bien
       .then(resultado => {
-        if (!resultado) { // Si son correctas las credenciales
-          res.json(`El Usuario con su contraseña es correcta`); // Enviar una respuesta de éxito al usuario
+        if (resultado) { // Si son correctas las credenciales
+          res.json("El Usuario con su contraseña es correcta"); // Enviar una respuesta de éxito al usuario
         } else {
           res.json("El Usuario con su contraseña NO es correcta"); // Enviar una respuesta de error al usuario
         }
@@ -424,7 +437,7 @@ export const contrasena_update = (req, res) => {
 }
 
 //////////////////////// Filtrados de Ventas ////////////////////////
-//Saca todos las productos con todos sus datos correspondientes
+//Saca todos las ventas con todos sus datos correspondientes
 export const listaventas = async (req, res) => {
   try {
     const listaventas = await pool.query(
@@ -607,16 +620,20 @@ export const venta_delete = async (req, res) => {
 
 // Función que permite realizar una consulta SELECT dinámicamente
 function selectFrom(tabla, map) { 
-    var query = "SELECT * FROM " + tabla + " WHERE ";
-    var index = map.size; 
-    map.forEach(function (value, key) {
-      query += key + " = " + "'" + value + "' "
-      if (index > 1) {
-        query += 'AND '
-      };
-      index--;
-    });
-    return pool.query(query)
+  var query = "SELECT * FROM " + tabla + " WHERE ";
+  var index = map.size; 
+  map.forEach(function (value, key) {
+    query += key + " = " + "'" + value + "' ";
+    if (index > 1) {
+      query += 'AND ';
+    };
+    index--;
+  });
+  query = query.trim();  // Elimina el espacio en blanco final
+  if (query.slice(-3).toLowerCase() === 'and') {  // Si la consulta termina con 'AND'
+    query = query.slice(0, -3);  // Elimina el 'AND' final
+  }
+  return pool.query(query)
       .then(rows => {
         if (rows[0][0] == null) {// Si la consulta no encontró resultados, se retorna false
           return false;

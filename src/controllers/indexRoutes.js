@@ -161,25 +161,26 @@ export const producto_add = (req, res) => {
 //Borra un producto por su id.
 export const producto_delete = (req, res) => { 
   const map = new Map();
-  map.set('Id', req.params.id); // Añade el Id del producto a verificar al mapa
+  map.set('Id', req.params.id); 
 
-  selectFrom('producto', map) // Llama a la función "selectFrom" que verifica si el producto existe
+  selectFrom('producto', map)
     .then(resultado => {
-      if (resultado) { // Verifica la devolución del metodo
-        // Ejecuta una consulta SQL DELETE para eliminar un producto de la base de datos
-        pool.execute("DELETE FROM producto WHERE Id = " +req.params.id)
+      if (resultado) { 
+        pool.execute("DELETE FROM producto WHERE Id = ?", [req.params.id])
           .then(rows => {
-            res.json("Producto borrado correctamente"); // Envía una respuesta JSON con un mensaje de éxito si la consulta DELETE se ejecuta correctamente
+            res.json("Producto borrado correctamente"); 
           })
           .catch(err => {
-            console.error("Error executing the query: " + err.stack); // Si hay un error en la consulta DELETE, registra el error en la consola
+            console.error("Error executing the query: " + err.stack);
+            res.status(500).json({error: 'Error executing the delete query'});
           });
       } else {
-        res.json("No existe un producto con ese ID"); // Envía una respuesta JSON si no hay producto con el ID proporcionado
+        res.json("No existe un producto con ese ID");
       }
     })
     .catch(error => {
-      console.error(error); // Si hay un error en la consulta SELECT, registra el error en la consola
+      console.error(error);
+      res.status(500).json({error: 'Error executing the select query'});
     });
 }
 
@@ -553,15 +554,25 @@ export const venta_add = async (req, res) => {
       "INSERT INTO ventas (IdUsuario, Direccion, Municipio, CodigoPostal, Fecha, Estado, Total) VALUES (?, ?, ?, ?, ?, ?, ?)",
       [idUsuario, direccion, municipio, codigoPostal, fechaFormat, estado, total]
     );
-
-    const idVenta = ventaResult.insertId; // Obtiene el ID de la venta que acabas de insertar.
+    
+    const idVenta = ventaResult[0].insertId; 
 
     // Para cada producto en el array de productos, inserta un nuevo registro en la tabla detalleventa.
     for (const producto of productos) {
-      await pool.query(
-        "INSERT INTO detalleventa (IdVenta, IdProducto, Cantidad, PrecioUnitario) VALUES (?, ?, ?, ?)",
-        [idVenta, producto.idProducto, producto.cantidad, producto.precioUnitario]
+      const productoResult = await pool.query(
+        "SELECT Precio FROM producto WHERE Id = ?",
+        [producto.idProducto]
       );
+       
+      if (productoResult.length > 0 && productoResult[0][0].Precio !== null) {
+        const precioUnitario = productoResult[0][0].Precio;
+        await pool.query(
+          "INSERT INTO detalleventa (IdVenta, IdProducto, Cantidad, PrecioUnitario) VALUES (?, ?, ?, ?)",
+          [idVenta, producto.idProducto, producto.cantidad, precioUnitario]
+        );
+      } else {
+        console.error("Error: No se pudo obtener el precio del producto");
+      }
     }
 
     res.json({

@@ -142,7 +142,9 @@ export const producto_add = (req, res) => {
   selectFrom('producto', map)
     .then(resultado => {
       if (!resultado) { 
-        pool.execute(`INSERT INTO producto (Nombre, Marca, Descripcion, Precio, Tipo, Imagen) VALUES ('${req.body.nombre}', '${req.body.marca}', '${req.body.descripcion}', ${req.body.precio}, '${req.body.tipo}', '${req.body.imagen}')`)
+        pool.execute(`INSERT INTO producto (Nombre, Marca, Descripcion, Precio, Tipo, Imagen) VALUES 
+        ('${req.body.nombre}', '${req.body.marca}', '${req.body.descripcion}', ${req.body.precio},
+         '${req.body.tipo}', '${req.body.imagen}')`)
           .then(rows => {
             res.json("Producto añadido correctamente"); 
           })
@@ -249,10 +251,13 @@ export const listausuarios = async (req, res) => {
 }
 
 //Saca el usuario por nombre
-export const usuario_nombre = (req, res) => { //Se realiza una consulta a la base de datos para obtener los datos del producto cuyo nombre coincide con el valor pasado en el parámetro "nombre"
+export const usuario_nombre = (req, res) => { //Se realiza una consulta a la base de datos para obtener los datos
+  // del producto cuyo nombre coincide con el valor pasado en el parámetro "nombre"
   //Se utiliza el objeto "pool" para ejecutar la consulta
-  pool.query("SELECT * FROM usuarios WHERE Nombre = '" + req.params.nombre + "'") //Se ejecuta la consulta y se concatenan los valores de los parámetros para formar la cadena de consulta SQL
-    .then(rows => { //Se mapea el resultado obtenido para seleccionar solo los campos que se quieren mostrar en la respuesta
+  pool.query("SELECT * FROM usuarios WHERE Nombre = '" + req.params.nombre + "'") //Se ejecuta la consulta
+  // y se concatenan los valores de los parámetros para formar la cadena de consulta SQL
+    .then(rows => { //Se mapea el resultado obtenido para seleccionar solo los campos que se quieren
+      // mostrar en la respuesta
       const array = rows[0].map(row => ({
         //Se asignan los valores de cada columna con las variables de la izquierda 
         id: row.Id,
@@ -266,7 +271,8 @@ export const usuario_nombre = (req, res) => { //Se realiza una consulta a la bas
       res.json(array); //Se devuelve la respuesta en formato JSON con la información del producto encontrado
     })
     .catch(err => {
-      console.error("Error executing the query: " + err.stack); //Se muestra un mensaje de error si no se pudo ejecutar la consulta correctamente
+      console.error("Error executing the query: " + err.stack); //Se muestra un mensaje de error si no se
+      // pudo ejecutar la consulta correctamente
     });
 }
 
@@ -297,13 +303,15 @@ export const usuario_add = (req, res) => {
           VALUES (?, ?, ?, ?, ?, ?)
           `, [req.body.nombre, req.body.contrasena, req.body.telefono, req.body.correo, fecha, req.body.rol])
           .then(rows => {
-            res.json("Usuario añadido correctamente"); // Envía una respuesta JSON con un mensaje de éxito si la consulta INSERT se ejecuta correctamente
+            res.json("Usuario añadido correctamente"); // Envía una respuesta JSON con un mensaje de éxito si la consulta INSERT 
+            //se ejecuta correctamente
           })
           .catch(err => {
             console.error("Error executing the query: " + err.stack); // Si hay un error en la consulta INSERT, registra el error en la consola
           });
       } else {
-        res.json("Ya existe un usuario con ese nombre"); // Envía una respuesta JSON con un mensaje de error si ya existe un usuario con el nombre proporcionado
+        res.json("Ya existe un usuario con ese nombre"); // Envía una respuesta JSON con un mensaje de error si ya existe 
+        //un usuario con el nombre proporcionado
       }
     })
     .catch(error => {
@@ -447,7 +455,8 @@ export const listaventas = async (req, res) => {
 
     const array = listaventas[0].map(async row => {
       return {
-        idusuario: row.Idusuario,
+        id: row.Id,
+        idusuario: row.IdUsuario,
         direccion: row.Direccion,
         municipio: row.Municipio,
         codigopostal: row.Codigopostal,

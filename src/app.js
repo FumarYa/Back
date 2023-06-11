@@ -43,6 +43,7 @@ const authMiddleware = (req, res, next) => {
   };
   
   app.use(cors(corsOptions));
+  
 
 app.use('/api/producto',productorouter);
 app.use('/api/usuarios',usuariosrouter);

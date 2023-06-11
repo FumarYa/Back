@@ -12,8 +12,6 @@
   "author": "Juan Castaño Carrilero",
   "license": "ISC",
   "dependencies": {
-    "@stripe/react-stripe-js": "^2.1.0",
-    "@stripe/stripe-js": "^1.54.0",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
@@ -21,7 +19,6 @@
     "express": "^4.18.2",
     "lru-cache": "^5.0.0",
     "mysql2": "^1.7.0",
-    "stripe": "^12.9.0",
     "swagger-ui-express": "^4.6.3"
   },
   "devDependencies": {
